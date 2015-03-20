@@ -9,6 +9,7 @@ int[][] map1=new int[100][100];
 int row,column;
 public Maze()
 {
+	/////////lalal`
 	File locatie= new File("D:\\!Scoala\\java\\PaTema4\\src\\map2.txt");
 	try
 	{
