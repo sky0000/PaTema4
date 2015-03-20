@@ -113,7 +113,7 @@ public int[] getFinishCell() {
 }
 public int isFreeAt(int i,int j)
 {
-	if (this.map1[i][j]==0)
+	if (this.map1[i][j]==0||this.map1[i][j]==2)
 		return 1;
 	return 0;		
 }
@@ -134,12 +134,13 @@ public int getColumnCount()
 	return this.column;
 }
 public int moveUp(int i,int j) {
-	if(i==0||this.isWallAt(i-1, j)==1)return 0;
+	if(i==0)return 0;
+	else if(this.isWallAt(i-1, j)==1)return 0;
 	return 1;
 }
 public int moveDown(int i,int j)
 {
-	if(i==row ||this.isWallAt(i+1, j)==1)return 0;
+	if(i==row ||map1[i][j]==2||this.isWallAt(i+1, j)==1 )return 0;
 	return 1;
 }
 public int moveLeft(int i,int j)
@@ -160,38 +161,84 @@ this.map1[i][j]=3;
 }
 public void play()
 {
+	int ok=1;
 	int [] start=this.
 			getStartCell();
 	int [] finish=this.getFinishCell();
 	int [] pozitieCurenta=start;
 	System.out.println(pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
-	while(start[0] !=finish[0]&&start[1]!=finish[1])
+	while(ok==1)
 	{
 		Scanner read=new Scanner(System.in);
 		String muta=read.next();
 		switch(muta)
 		{
-		case "w" : if(this.moveUp(start[0], start[1])==1&&this.isFreeAt(start[0]-1, start[1])==1)
-		          {this.muta(start[0]-1, start[1]);
-		          start[0]=start[0]-1;this.map1[start[0]][start[1]]=3;
-		          System.out.println(this.toString());break;
-		          }
-		case "s" : if(this.moveDown(start[0], start[1])==1&&this.isFreeAt(start[0]+1, start[1])==1)
-        {this.muta(start[0]+1, start[1]);
-        start[0]=start[0]+1;this.map1[start[0]][start[1]]=3;
-        System.out.println(this.toString());break;
-        }
-		case "a" : if(this.moveLeft(start[0], start[1])==1&&this.isFreeAt(start[0],start[1]-1)==1)
-        {this.muta(start[0], start[1]-1);
-        start[1]=start[1]-1;this.map1[start[0]][start[1]]=3;
-        System.out.println(this.toString());break;
-        }
-		case "d" : if(this.moveRight(start[0], start[1])==1&&this.isFreeAt(start[0], start[1]+1)==1)
-        {this.muta(start[0], start[1]+1);
-        start[1]=start[1]+1;this.map1[start[0]][start[1]]=3;
-        System.out.println(this.toString());break;
-        }
-			
+		case "w" : 
+					if(this.moveUp(start[0], start[1])==1&&this.isFreeAt(start[0]-1, start[1])==1)
+						if(this.map1[start[0]-1][start[1]]==2) 
+							{
+							ok=0;
+							break;
+							}
+						 else
+	                	 {
+							 this.muta(start[0]-1, start[1]);
+							 start[0]=start[0]-1;
+							 this.map1[start[0]][start[1]]=3;
+							 System.out.println(this.toString());
+	                	 }
+					else
+		        	  break;
+		          
+		case "s" : 
+					if(this.moveDown(start[0], start[1])==1&&this.isFreeAt(start[0]+1, start[1])==1)
+						if(this.map1[start[0]+1][start[1]]==2)
+						{
+							ok=0;
+							break;
+						}
+					  else
+						{
+						  this.muta(start[0]+1, start[1]);
+						  start[0]=start[0]+1;
+						  this.map1[start[0]][start[1]]=3;
+						  System.out.println(this.toString());break;
+						}
+					else
+						break;
+		case "a" : 
+					if(this.moveLeft(start[0], start[1])==1&&this.isFreeAt(start[0],start[1]-1)==1)
+						if(this.map1[start[0]][start[1]-1]==2)
+							{
+							ok=0;
+							break;
+							}
+						 else
+						 {
+							 this.muta(start[0], start[1]-1);
+							 start[1]=start[1]-1;
+							 this.map1[start[0]][start[1]]=3;
+							 System.out.println(this.toString());break;
+	                	} 
+					else
+						break;
+		case "d" :	
+					if(this.moveRight(start[0], start[1])==1&&this.isFreeAt(start[0], start[1]+1)==1)
+						if(this.map1[start[0]][start[1]+1]==2) 
+							{
+								ok=0;
+								break;
+							}
+						 else
+						 	{
+							 this.muta(start[0], start[1]+1);
+							 start[1]=start[1]+1;
+							 this.map1[start[0]][start[1]]=3;
+							 System.out.println(this.toString());break;
+						 	} 
+					else
+						break;
+		default : System.out.println("Mutare nepermisa");
 		}
 	}
 	System.out.println("good job"+pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
