@@ -80,27 +80,36 @@ public String toString(String txt)
 
 public int[] getStartCell()
 {
-	for(int i =1;i<row;i++)
-		for(int j=0;j<column;j++)
+	int poz[]=new int[2];
+	for(int i =0;i<this.row;i++)
+		for(int j=0;j<this.
+				column;j++)
 			if(map1[i][j]==-1)
-			
-				return  new  int [] {i,j};
-	return null;
+			{
+				poz[0]=i;poz[1]=j;
+				break;
+			}
+	System.out.println(poz[0]+" "+poz[1]);
+				return  poz;
+
 			
 }
 public static void main(String [] args)
 {
 	Maze exemplu=new Maze();
-	System.out.println(exemplu.toString("txt"));
+	System.out.println(exemplu.toString());
 	exemplu.play();
 }
 public int[] getFinishCell() {
-	for(int i =1;i<row;i++)
-		for(int j=0;j<column;j++)
+	int [] poz=new int[2];
+	for(int i =1;i<this.row;i++)
+		for(int j=0;j<this.column;j++)
 			if(map1[i][j]==2)
-			
-				return  new  int [] {i,j};
-	return null;
+			{
+				poz[0]=i;
+				poz[1]=j;
+			}
+				return  poz;
 }
 public int isFreeAt(int i,int j)
 {
@@ -152,9 +161,10 @@ this.map1[i][j]=0;
 }
 public void play()
 {
-	int [] start=this.getStartCell();
+	int [] start=this.
+			getStartCell();
 	
-	System.out.println(start.length+" ");
+	System.out.println(start[0]+" "+start[1]);
 }
 }//////
 
