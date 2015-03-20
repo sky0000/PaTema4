@@ -1,15 +1,15 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Scanner;
 
-//
+
 public class Maze implements LabyrinthModel,LabyrinthView,LabyrinthSolver
 {
 int[][] map1=new int[100][100];
 int row,column;
 public Maze()
 {
-	/////////lalal`
 	File locatie= new File("D:\\!Scoala\\gitRep\\Tema4\\PaTema4MazeRunner\\src\\map2.txt");
 	try
 	{
@@ -134,13 +134,12 @@ public int getColumnCount()
 	return this.column;
 }
 public int moveUp(int i,int j) {
-	if(i==0)return 0;
+	if(i==0||this.isWallAt(i-1, j)==1)return 0;
 	return 1;
 }
 public int moveDown(int i,int j)
 {
-	if(i==row )return 0;
-	else if(this.isWallAt(i+1, j)==1)return 0;
+	if(i==row ||this.isWallAt(i+1, j)==1)return 0;
 	return 1;
 }
 public int moveLeft(int i,int j)
@@ -157,14 +156,45 @@ public int moveRight(int i,int j)
 }
 public void muta(int i,int j)
 {
-this.map1[i][j]=0;
+this.map1[i][j]=3;
 }
 public void play()
 {
 	int [] start=this.
 			getStartCell();
-	
-	System.out.println(start[0]+" "+start[1]);
+	int [] finish=this.getFinishCell();
+	int [] pozitieCurenta=start;
+	System.out.println(pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
+	while(start[0] !=finish[0]&&start[1]!=finish[1])
+	{
+		Scanner read=new Scanner(System.in);
+		String muta=read.next();
+		switch(muta)
+		{
+		case "w" : if(this.moveUp(start[0], start[1])==1&&this.isFreeAt(start[0]-1, start[1])==1)
+		          {this.muta(start[0]-1, start[1]);
+		          start[0]=start[0]-1;this.map1[start[0]][start[1]]=3;
+		          System.out.println(this.toString());break;
+		          }
+		case "s" : if(this.moveDown(start[0], start[1])==1&&this.isFreeAt(start[0]+1, start[1])==1)
+        {this.muta(start[0]+1, start[1]);
+        start[0]=start[0]+1;this.map1[start[0]][start[1]]=3;
+        System.out.println(this.toString());break;
+        }
+		case "a" : if(this.moveLeft(start[0], start[1])==1&&this.isFreeAt(start[0],start[1]-1)==1)
+        {this.muta(start[0], start[1]-1);
+        start[1]=start[1]-1;this.map1[start[0]][start[1]]=3;
+        System.out.println(this.toString());break;
+        }
+		case "d" : if(this.moveRight(start[0], start[1])==1&&this.isFreeAt(start[0], start[1]+1)==1)
+        {this.muta(start[0], start[1]+1);
+        start[1]=start[1]+1;this.map1[start[0]][start[1]]=3;
+        System.out.println(this.toString());break;
+        }
+			
+		}
+	}
+	System.out.println("good job"+pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
 }
-}//////
+}
 
