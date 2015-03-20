@@ -10,7 +10,7 @@ int row,column;
 public Maze()
 {
 	/////////lalal`
-	File locatie= new File("D:\\!Scoala\\java\\PaTema4\\src\\map2.txt");
+	File locatie= new File("D:\\!Scoala\\gitRep\\Tema4\\PaTema4MazeRunner\\src\\map2.txt");
 	try
 	{
 		FileReader readFrom=new FileReader(locatie);
