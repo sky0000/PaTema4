@@ -71,7 +71,9 @@ public String toString(String txt)
 				if(map1[i][j]==2)
 					matrix.append("|"+ "F");
 				else if(map1[i][j]==0)
-					matrix.append("| ");		
+					matrix.append("| ");
+				else if(map1[i][j]==3)
+					matrix.append("|$");
 			}
 			matrix.append("|"+NEW_LINE);
 		}
@@ -97,7 +99,7 @@ public int[] getStartCell()
 public static void main(String [] args)
 {
 	Maze exemplu=new Maze();
-	System.out.println(exemplu.toString());
+	System.out.println(exemplu.toString("z"));
 	exemplu.play();
 }
 public int[] getFinishCell() {
@@ -140,7 +142,7 @@ public int moveUp(int i,int j) {
 }
 public int moveDown(int i,int j)
 {
-	if(i==row ||map1[i][j]==2||this.isWallAt(i+1, j)==1 )return 0;
+	if(i==row ||this.isWallAt(i+1, j)==1 )return 0;
 	return 1;
 }
 public int moveLeft(int i,int j)
@@ -157,7 +159,30 @@ public int moveRight(int i,int j)
 }
 public void muta(int i,int j)
 {
-this.map1[i][j]=3;
+if(this.map1[i][j]==-1)
+	this.map1[i][j]=-1;
+else this.map1[i][j]=3;
+}
+void clearPositionUp(int i,int j)
+{
+	if(this.map1[i][j]==3)
+		this.map1[i+1][j]=0;
+}
+void clearPositionDown(int i,int j)
+{
+	 if(this.map1[i][j]==3)
+		this.map1[i+1][j]=0;
+}
+void clearPositionLeft(int i,int j)
+{
+	 if(this.map1[i][j-1]==3)
+		this.map1[i][j-1]=0;
+}
+void clearPositionRight(int i,int j)
+{
+		if(this.map1[i][j+1]==3)
+		this.map1[i][j+1]=0;
+		
 }
 public void play()
 {
@@ -167,14 +192,14 @@ public void play()
 	int [] finish=this.getFinishCell();
 	int [] pozitieCurenta=start;
 	System.out.println(pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
-	while(ok==1)
+	while(ok==1||start[0]<5||start[1]<5)
 	{
 		Scanner read=new Scanner(System.in);
 		String muta=read.next();
 		switch(muta)
 		{
 		case "w" : 
-					if(this.moveUp(start[0], start[1])==1&&this.isFreeAt(start[0]-1, start[1])==1)
+					if(this.moveUp(start[0], start[1])==1&&this.isFreeAt(start[0]-1, start[1])==1||this.map1[start[0]-1][start[1]]==-1||this.map1[start[0]-1][start[1]]==3)
 						if(this.map1[start[0]-1][start[1]]==2) 
 							{
 							ok=0;
@@ -184,14 +209,15 @@ public void play()
 	                	 {
 							 this.muta(start[0]-1, start[1]);
 							 start[0]=start[0]-1;
-							 this.map1[start[0]][start[1]]=3;
-							 System.out.println(this.toString());
+							 //this.clearPositionUp(start[0], start[1]);
+							 System.out.println(start[0]+" "+start[1]);
+							 System.out.println(this.toString("s"));
 	                	 }
 					else
 		        	  break;
 		          
 		case "s" : 
-					if(this.moveDown(start[0], start[1])==1&&this.isFreeAt(start[0]+1, start[1])==1)
+					if(this.moveDown(start[0], start[1])==1&&this.isFreeAt(start[0]+1, start[1])==1||this.map1[start[0]+1][start[1]]==-1||this.map1[start[0]+1][start[1]]==3)
 						if(this.map1[start[0]+1][start[1]]==2)
 						{
 							ok=0;
@@ -201,13 +227,14 @@ public void play()
 						{
 						  this.muta(start[0]+1, start[1]);
 						  start[0]=start[0]+1;
-						  this.map1[start[0]][start[1]]=3;
-						  System.out.println(this.toString());break;
+						  //this.clearPositionDown(start[0], start[1]);
+						  System.out.println(start[0]+" "+start[1]);
+						  System.out.println(this.toString("s"));break;
 						}
 					else
 						break;
 		case "a" : 
-					if(this.moveLeft(start[0], start[1])==1&&this.isFreeAt(start[0],start[1]-1)==1)
+					if(this.moveLeft(start[0], start[1])==1&&this.isFreeAt(start[0],start[1]-1)==1||this.map1[start[0]][start[1]-1]==-1||this.map1[start[0]][start[1]-1]==3)
 						if(this.map1[start[0]][start[1]-1]==2)
 							{
 							ok=0;
@@ -217,13 +244,13 @@ public void play()
 						 {
 							 this.muta(start[0], start[1]-1);
 							 start[1]=start[1]-1;
-							 this.map1[start[0]][start[1]]=3;
-							 System.out.println(this.toString());break;
+							 System.out.println(start[0]+" "+start[1]);
+							 System.out.println(this.toString("s"));break;
 	                	} 
 					else
 						break;
 		case "d" :	
-					if(this.moveRight(start[0], start[1])==1&&this.isFreeAt(start[0], start[1]+1)==1)
+					if(this.moveRight(start[0], start[1])==1&&this.isFreeAt(start[0], start[1]+1)==1||this.map1[start[0]][start[1]+1]==-1||this.map1[start[0]][start[1]+1]==3)
 						if(this.map1[start[0]][start[1]+1]==2) 
 							{
 								ok=0;
@@ -233,8 +260,8 @@ public void play()
 						 	{
 							 this.muta(start[0], start[1]+1);
 							 start[1]=start[1]+1;
-							 this.map1[start[0]][start[1]]=3;
-							 System.out.println(this.toString());break;
+							 System.out.println(start[0]+" "+start[1]);
+							 System.out.println(this.toString("s"));break;
 						 	} 
 					else
 						break;
