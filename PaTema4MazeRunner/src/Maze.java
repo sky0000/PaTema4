@@ -1,13 +1,19 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 
-public class Maze implements LabyrinthModel,LabyrinthView,LabyrinthSolver
+public class Maze implements LabyrinthModel,LabyrinthView,LabyrinthSolver,LabyrinthObserver
 {
 int[][] map1=new int[100][100];
 int row,column;
+String solPart;
+ ArrayList<String> ex= new ArrayList<String>(); 
 public Maze()
 {
 	File locatie= new File("D:\\!Scoala\\gitRep\\Tema4\\PaTema4MazeRunner\\src\\map2.txt");
@@ -71,7 +77,8 @@ public String toString(String txt)
 				if(map1[i][j]==2)
 					matrix.append("|"+ "F");
 				else if(map1[i][j]==0)
-					matrix.append("| ");
+					
+					matrix.append("| ");		
 				else if(map1[i][j]==3)
 					matrix.append("|$");
 			}
@@ -99,8 +106,53 @@ public int[] getStartCell()
 public static void main(String [] args)
 {
 	Maze exemplu=new Maze();
-	System.out.println(exemplu.toString("z"));
-	exemplu.play();
+	//exemplu.cccc();
+    //exemplu.sort();
+  if( exemplu.nextCellToExplore(4, 0))
+	  System.out.println("succes");
+}
+public void sort()
+{
+	Collections.sort(ex,new Comparator<String>(){
+		@Override
+		public int compare(String s1,String s2)
+		{
+			if(s1.length()<s2.length())
+			{
+				return -1;
+			}
+			else 
+			{
+				return s1.compareTo(s2);
+			}
+			
+		}
+	}); 
+	for(String film : ex)
+    	System.out.println(film+"" );
+}
+void cccc()
+{
+	int nrjoc=1;
+	while(nrjoc==1)
+	{ 
+		for(int i= 0;i<row;i++)
+			for(int j=0;j<column;j++)
+				if(map1[i][j]==3)map1[i][j]=0;
+		solPart=new String();
+		System.out.println(this.toString(""));
+	this.play();
+	System.out.println("0-Iesi\n 1-Joaca din nou");
+	Scanner read1=new Scanner(System.in);
+	int nr=read1.nextInt();
+	if (nr==1)
+		nrjoc=1;
+	else nrjoc=0;
+}
+	for(String exa : ex)
+	{
+	System.out.println(exa.toString());
+	}
 }
 public int[] getFinishCell() {
 	int [] poz=new int[2];
@@ -115,7 +167,7 @@ public int[] getFinishCell() {
 }
 public int isFreeAt(int i,int j)
 {
-	if (this.map1[i][j]==0||this.map1[i][j]==2)
+	if (this.map1[i][j]==0||this.map1[i][j]==2||this.map1[i][j]==3)
 		return 1;
 	return 0;		
 }
@@ -142,7 +194,7 @@ public int moveUp(int i,int j) {
 }
 public int moveDown(int i,int j)
 {
-	if(i==row ||this.isWallAt(i+1, j)==1 )return 0;
+	if(i==row ||map1[i][j]==2||this.isWallAt(i+1, j)==1 )return 0;
 	return 1;
 }
 public int moveLeft(int i,int j)
@@ -159,30 +211,8 @@ public int moveRight(int i,int j)
 }
 public void muta(int i,int j)
 {
-if(this.map1[i][j]==-1)
-	this.map1[i][j]=-1;
-else this.map1[i][j]=3;
-}
-void clearPositionUp(int i,int j)
-{
-	if(this.map1[i][j]==3)
-		this.map1[i+1][j]=0;
-}
-void clearPositionDown(int i,int j)
-{
-	 if(this.map1[i][j]==3)
-		this.map1[i+1][j]=0;
-}
-void clearPositionLeft(int i,int j)
-{
-	 if(this.map1[i][j-1]==3)
-		this.map1[i][j-1]=0;
-}
-void clearPositionRight(int i,int j)
-{
-		if(this.map1[i][j+1]==3)
-		this.map1[i][j+1]=0;
-		
+if(this.map1[i][j]!=-1)
+	this.map1[i][j]=0;;
 }
 public void play()
 {
@@ -192,83 +222,160 @@ public void play()
 	int [] finish=this.getFinishCell();
 	int [] pozitieCurenta=start;
 	System.out.println(pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
-	while(ok==1||start[0]<5||start[1]<5)
-	{
+
+	while(ok==1)
+	{  
 		Scanner read=new Scanner(System.in);
 		String muta=read.next();
 		switch(muta)
 		{
 		case "w" : 
-					if(this.moveUp(start[0], start[1])==1&&this.isFreeAt(start[0]-1, start[1])==1||this.map1[start[0]-1][start[1]]==-1||this.map1[start[0]-1][start[1]]==3)
+					if(this.moveUp(start[0], start[1])==1&&this.isFreeAt(start[0]-1, start[1])==1)
 						if(this.map1[start[0]-1][start[1]]==2) 
 							{
+							solPart=solPart+"su ";
 							ok=0;
 							break;
-							}
-						 else
-	                	 {
-							 this.muta(start[0]-1, start[1]);
-							 start[0]=start[0]-1;
-							 //this.clearPositionUp(start[0], start[1]);
-							 System.out.println(start[0]+" "+start[1]);
-							 System.out.println(this.toString("s"));
-	                	 }
+							}			 
+						else	
+
+							{
+								this.muta(start[0], start[1]);
+								
+								start[0]=start[0]-1;
+								this.map1[start[0]][start[1]]=3;
+								System.out.println(this.toString(""));
+								solPart=solPart+"su ";break;
+	                	
+						}
+					
 					else
 		        	  break;
 		          
 		case "s" : 
-					if(this.moveDown(start[0], start[1])==1&&this.isFreeAt(start[0]+1, start[1])==1||this.map1[start[0]+1][start[1]]==-1||this.map1[start[0]+1][start[1]]==3)
+					if(this.moveDown(start[0], start[1])==1&&this.isFreeAt(start[0]+1, start[1])==1)
 						if(this.map1[start[0]+1][start[1]]==2)
-						{
+						{   solPart=solPart+"jo ";
 							ok=0;
 							break;
 						}
-					  else
+
+						else
 						{
-						  this.muta(start[0]+1, start[1]);
+						  this.muta(start[0], start[1]);
+						  
 						  start[0]=start[0]+1;
-						  //this.clearPositionDown(start[0], start[1]);
-						  System.out.println(start[0]+" "+start[1]);
-						  System.out.println(this.toString("s"));break;
+						  this.map1[start[0]][start[1]]=3;
+						  System.out.println(this.toString(""));
+						  solPart=solPart+"jo ";break;
 						}
 					else
 						break;
 		case "a" : 
-					if(this.moveLeft(start[0], start[1])==1&&this.isFreeAt(start[0],start[1]-1)==1||this.map1[start[0]][start[1]-1]==-1||this.map1[start[0]][start[1]-1]==3)
+					if(this.moveLeft(start[0], start[1])==1&&this.isFreeAt(start[0],start[1]-1)==1)
 						if(this.map1[start[0]][start[1]-1]==2)
 							{
+							solPart=solPart+"st ";
 							ok=0;
 							break;
 							}
-						 else
-						 {
-							 this.muta(start[0], start[1]-1);
+
+							else
+							{
+								this.muta(start[0], start[1]);
+								
 							 start[1]=start[1]-1;
-							 System.out.println(start[0]+" "+start[1]);
-							 System.out.println(this.toString("s"));break;
+							 this.map1[start[0]][start[1]]=3;
+							 System.out.println(this.toString(""));
+							 solPart=solPart+"st ";break;
 	                	} 
 					else
 						break;
 		case "d" :	
-					if(this.moveRight(start[0], start[1])==1&&this.isFreeAt(start[0], start[1]+1)==1||this.map1[start[0]][start[1]+1]==-1||this.map1[start[0]][start[1]+1]==3)
+					if(this.moveRight(start[0], start[1])==1&&this.isFreeAt(start[0], start[1]+1)==1)
 						if(this.map1[start[0]][start[1]+1]==2) 
-							{
+							{   solPart=solPart+"dr ";
 								ok=0;
 								break;
 							}
-						 else
-						 	{
-							 this.muta(start[0], start[1]+1);
+
+							else
+							{
+							 this.muta(start[0], start[1]);
+							
 							 start[1]=start[1]+1;
-							 System.out.println(start[0]+" "+start[1]);
-							 System.out.println(this.toString("s"));break;
+							 this.map1[start[0]][start[1]]=3;
+							 System.out.println(this.toString(""));
+							 solPart=solPart+"dr ";break;
 						 	} 
 					else
 						break;
+		case "q" :this.processCell();break;
 		default : System.out.println("Mutare nepermisa");
 		}
 	}
+	ex.add(solPart);
+	this.processSolution();
 	System.out.println("good job"+pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
-}
-}
+	
 
+}
+public void processCell()
+{  System.out.println("Solutie partiala:");
+	String [] result =solPart.toString().split(" ");
+	for(int i=0;i<result.length;i++)
+		
+	System.out.println(result[i]+" ");
+	
+}
+public void processSolution()
+{
+	 System.out.println("Solutie finala:");
+		String [] result =solPart.toString().split(" ");
+		for(int i=0;i<result.length;i++)
+			
+		System.out.println(result[i]+" ");
+}
+public boolean nextCellToExplore(int i,int j)
+{  
+	if(map1[i][j]==2)
+	
+{return true;}
+	this.map1[i][j]=3;
+
+	System.out.println(this.toString(""));
+	
+	
+    if (this.moveDown(i, j)==1  && this.isFreeAt(i+1,j) == 1 && nextCellToExplore(i + 1, j))
+	    {
+	        return true;
+	    }
+	 else
+	 if (this.moveUp(i, j)==1 && this.isFreeAt(i-1,j) == 1 && nextCellToExplore(i - 1, j))
+	    {
+	        return true;
+	    }
+	 else
+	 if (this.moveLeft(i, j)==1&& this.isFreeAt(i,j-1) == 1 && nextCellToExplore(i , j-1))
+	    {
+	        return true;
+	    }
+	 else
+	 if ( this.moveRight(i, j)==1 && this.isFreeAt(i,j+1) == 1 && nextCellToExplore(i, j+1))
+	    {
+	        return true;
+	    }
+	 else
+     this.map1[i][j]=0;
+     System.out.println(this.toString(""));
+    try 
+    {
+    	Thread.sleep(60000);
+    }
+    catch(InterruptedException ex){
+    	Thread.currentThread().interrupt();
+    }
+    return false;
+    }
+    
+}
