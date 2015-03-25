@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +14,7 @@ public class Maze implements LabyrinthModel,LabyrinthView,LabyrinthSolver,Labyri
 int[][] map1=new int[100][100];
 int row,column;
 String solPart;
+static String solver=new String();
  ArrayList<String> ex= new ArrayList<String>(); 
 public Maze()
 {
@@ -45,9 +47,28 @@ public Maze()
 	System.out.println("Nu pot citi date "+e.getMessage());
 	}
 }
+public Maze(int param)
+{
+	System.out.println("Dati lungimea laturii: ");
+	Scanner read1= new Scanner(System.in);
+	int n=read1.nextInt();
+	row=n;
+	column=n;
+	 for(int i=0;i<n;i++)
+		 for(int j=0;j<n;j++)
+		 {
+			 Scanner read2= new Scanner(System.in);
+			 int val=read2.nextInt();
+			 map1[i][j]=val;
+		 }
+}
 @Override
 public String toString()
 {
+	//for(int i= 0;i<row;i++)
+		//for(int j=0;j<column;j++)
+		//	if(map1[i][j]==3)map1[i][j]=0;
+	
 	StringBuilder matrix=new StringBuilder();
 	String NEW_LINE=System.getProperty("line.separator");
 	for(int i =0;i<row;i++)
@@ -61,7 +82,9 @@ public String toString()
 		return matrix.toString();
 	}
 public String toString(String txt)
-{
+{      
+
+	
 		StringBuilder matrix=new StringBuilder();
 		String NEW_LINE=System.getProperty("line.separator");
 		for(int i =0;i<row;i++)
@@ -98,18 +121,90 @@ public int[] getStartCell()
 				poz[0]=i;poz[1]=j;
 				break;
 			}
-	System.out.println(poz[0]+" "+poz[1]);
+	//System.out.println(poz[0]+" "+poz[1]);
 				return  poz;
 
 			
 }
-public static void main(String [] args)
+public void menu() throws IOException
 {
-	Maze exemplu=new Maze();
-	//exemplu.cccc();
-    //exemplu.sort();
-  if( exemplu.nextCellToExplore(4, 0))
-	  System.out.println("succes");
+	try
+	{
+	int ok=1;
+	while(ok==1)
+	{
+		System.out.println("1- Play");
+		System.out.println("2- Afisare cu cifre");
+		System.out.println("3- Afisare cu caractere");
+		System.out.println("4- Auto-solve");
+		System.out.println("5- Afara!");
+		
+		Scanner read= new Scanner(System.in);
+		int optiune=read.nextInt();
+		switch (optiune){
+		case 1: this.cccc();
+		        break;
+		case 2:
+			for(int i= 0;i<row;i++)
+				for(int j=0;j<column;j++)
+					if(map1[i][j]==3)map1[i][j]=0;
+			System.out.println(this.toString());
+		
+				break;
+		case 3:
+			    for(int i= 0;i<row;i++)
+			    	for(int j=0;j<column;j++)
+			    		if(map1[i][j]==3)map1[i][j]=0;
+			    System.out.println(this.toString(""));
+				break;
+		case 4: int [] start=this.
+				getStartCell();
+		        solver=new String();
+				for(int i= 0;i<row;i++)
+				for(int j=0;j<column;j++)
+					if(map1[i][j]==3)map1[i][j]=0;
+				if(this.nextCellToExplore(start[0], start[1]))
+				{
+					System.out.println("succes");
+				System.out.println(solver);
+				}
+				else 
+					System.out.println("Nu exista solutie");
+				break;
+		case 5:ok=0; break;
+		default: System.out.println("Optiune invalida");
+				break;
+		}
+	}
+	}
+	catch(Exception e)
+	
+	{
+	System.out.println("Ma incearca ;)");
+	this.menu();
+	}
+}
+public static void main(String [] args) throws IOException
+{  
+	
+	System.out.println("0- Cititi labirint din fisier \n1-Cititi labirint de la tastatura");
+	Scanner op=new Scanner(System.in);
+	int optiune= op.nextInt();
+	if(optiune==0)
+	{
+		Maze exemplu=new Maze();
+		   exemplu.menu();
+	}
+	else{
+	Maze exemplu=new Maze(1);
+   exemplu.menu();
+	}
+}
+//@Override 
+public int compareTo(int ceva, int ceva1){
+	if (ceva>ceva1) return 1;
+	return -1;
+	
 }
 public void sort()
 {
@@ -123,13 +218,13 @@ public void sort()
 			}
 			else 
 			{
-				return s1.compareTo(s2);
+				return compareTo(s1.length(), s2.length());
 			}
 			
 		}
 	}); 
-	for(String film : ex)
-    	System.out.println(film+"" );
+	for(String maze : ex)
+    	System.out.println(maze+"" );
 }
 void cccc()
 {
@@ -153,6 +248,8 @@ void cccc()
 	{
 	System.out.println(exa.toString());
 	}
+	System.out.println("Solutiile sortate");
+	this.sort();
 }
 public int[] getFinishCell() {
 	int [] poz=new int[2];
@@ -164,6 +261,12 @@ public int[] getFinishCell() {
 				poz[1]=j;
 			}
 				return  poz;
+}
+public int isFreeForSolve(int i,int j)
+{
+	if (this.map1[i][j]==0||this.map1[i][j]==2)
+		return 1;
+	return 0;		
 }
 public int isFreeAt(int i,int j)
 {
@@ -221,7 +324,7 @@ public void play()
 			getStartCell();
 	int [] finish=this.getFinishCell();
 	int [] pozitieCurenta=start;
-	System.out.println(pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
+	System.out.println("start"+pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
 
 	while(ok==1)
 	{  
@@ -316,7 +419,7 @@ public void play()
 	}
 	ex.add(solPart);
 	this.processSolution();
-	System.out.println("good job"+pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
+	System.out.println("good job");//+pozitieCurenta[0]+" "+pozitieCurenta[1]+" finish"+ finish[0]+" "+finish[1]);
 	
 
 }
@@ -338,44 +441,69 @@ public void processSolution()
 }
 public boolean nextCellToExplore(int i,int j)
 {  
-	if(map1[i][j]==2)
-	
-{return true;}
-	this.map1[i][j]=3;
 
+if(map1[i][j]==2){return true;}
+	if(map1[i][j]==-1) this.map1[i][j]=-1;
+	else
+	this.map1[i][j]=3;
+ 
 	System.out.println(this.toString(""));
 	
-	
-    if (this.moveDown(i, j)==1  && this.isFreeAt(i+1,j) == 1 && nextCellToExplore(i + 1, j))
-	    {
-	        return true;
-	    }
-	 else
-	 if (this.moveUp(i, j)==1 && this.isFreeAt(i-1,j) == 1 && nextCellToExplore(i - 1, j))
-	    {
-	        return true;
-	    }
-	 else
-	 if (this.moveLeft(i, j)==1&& this.isFreeAt(i,j-1) == 1 && nextCellToExplore(i , j-1))
-	    {
-	        return true;
-	    }
-	 else
-	 if ( this.moveRight(i, j)==1 && this.isFreeAt(i,j+1) == 1 && nextCellToExplore(i, j+1))
-	    {
-	        return true;
-	    }
-	 else
-     this.map1[i][j]=0;
-     System.out.println(this.toString(""));
-    try 
+	try 
     {
-    	Thread.sleep(60000);
+    	Thread.sleep(500);
     }
     catch(InterruptedException ex){
     	Thread.currentThread().interrupt();
     }
+    if (this.moveDown(i, j)==1  && this.isFreeForSolve(i+1,j) == 1 && nextCellToExplore(i + 1, j))
+	    {
+    		solver=solver+"jo ";
+	        return true;
+	    }
+	 else
+	 if (this.moveUp(i, j)==1 && this.isFreeForSolve(i-1,j) == 1 && nextCellToExplore(i - 1, j))
+	    {
+		 solver=solver+"su ";
+	        return true;
+	    }
+	 else
+	 if (this.moveLeft(i, j)==1&& this.isFreeForSolve(i,j-1) == 1 && nextCellToExplore(i , j-1))
+	    {
+		 solver=solver+"st ";
+	        return true;
+	    }
+	 else
+	 if ( this.moveRight(i, j)==1 && this.isFreeForSolve(i,j+1) == 1 && nextCellToExplore(i, j+1))
+	    {
+		  solver=solver+"dr ";
+	        return true;
+	    }
+	 else
+    this.map1[i][j]=0;
+     System.out.println(this.toString(""));
+  
     return false;
-    }
-    
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 }
